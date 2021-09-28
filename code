@@ -1,0 +1,142 @@
+---
+title: "CEDE Aruba report"
+output: html_notebook
+---
+
+
+```{r}
+library(likert)
+setwd("~/CEDE")
+CEDE <- read.csv("SSC_CEDE.csv")
+likert<- read.csv("likert_CEDE.csv")
+```
+
+# not working
+```{r}
+likert(likert~., b, positive.order=TRUE, as.percent = TRUE,
+           main="At my child's school my child is safe.",
+           xlab="percentage",ylab="School Code")
+```
+
+#Sankey
+```{r}
+links<-read.csv("sankey.csv")
+
+library(plotly)
+library(networkD3)
+
+# From these flows we need to create a node data frame: it lists every entities involved in the flow
+nodes <- data.frame(
+  name=c(as.character(links$source), 
+  as.character(links$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+# Make the Network
+p <- sankeyNetwork(Links = links, Nodes = nodes,
+              Source = "IDsource", Target = "IDtarget",
+              Value = "value", NodeID = "name", 
+              sinksRight=FALSE,
+)
+p
+
+
+```
+```{r}
+table(CEDE$Overall..how.satisfied.were.you.with.CEDE.Aruba.s.support..services...activities...collaboration.during.the.period.2017.2021.)
+table(CEDE$How.can.we.make.it.easier.for.you.to.use.our.services.in.the.future....please.all.that.apply.) #Needs cleaning
+table(CEDE$How.do.you.perceive.the.alignment.of.your.project.or.organization.with.CEDE.Aruba.s.goals.and.mission....Mission.CEDE.Aruba..Stimulate..support.and.bring.together.organizations.and.initiatives.aim...)
+```
+
+```{r}
+bump<-read.csv("bump.csv")
+
+
+bChart <- ggplot(bump, aes(x = Year,
+
+                         y = Rank,
+
+                         label = paste0(Rank, ". ", Name),
+
+                         group = Name,
+
+                         color = Name
+
+                         )) +
+
+                        geom_point(size = 3) +
+
+                        geom_line() + scale_y_reverse()
+
+
+bChart <- bChart + theme(panel.background = element_blank(),
+
+             legend.position = "none",
+
+             panel.grid=element_blank(),
+
+             axis.ticks=element_blank(),
+
+             axis.text.y=element_blank(),
+
+             panel.border=element_blank(),
+
+             plot.margin=unit(c(30, 30, 30, 30), "points")
+
+             ) + ylab("") + xlab("")
+
+bChart <- bChart + labs(title = "Current ranking CEDE Aruba strategic priorities 2017-2021",
+
+                        subtitle="Survey stakeholders, Session NGOs and Beneficiaries, Session Soundingboard and Funders",
+
+                        caption="Source: Cornerstone economics, 2021") +
+
+  theme(plot.title = element_text(face="bold",size=14, color="black"))
+
+bChart <- bChart + geom_text(data=. %>%
+
+            arrange(desc(Year)) %>%
+
+            group_by(Name) %>%
+
+            slice(1),
+
+          position=position_nudge(0.3), hjust=0) +
+
+          geom_text(data=. %>%
+
+              arrange(-desc(Year)) %>%
+
+              group_by(Name) %>%
+
+              slice(1),
+
+            position=position_nudge(-0.3), hjust=1)
+
+bChart <- bChart + scale_x_discrete(expand = c(0.5, 0.1))
+
+bChart
+```
+
+```{r}
+table(CEDE$Have.you.received.funding.from.CEDE.Aruba..During.the.period.2017.2021.)
+```
+```{r}
+table(CEDE$With.finding.information.on.how.to.apply.for.funding.)
+table(CEDE$With.the.guidance.on.making.a.grant.application.by.CEDE.Aruba.s.official.)
+table(CEDE$With.the.application.and.decision.process)
+table(CEDE$The.support.after.approval.process)
+table(CEDE$With.the.grants.monitoring.process)
+table(CEDE$With.the.claims.and.payment.process)
+table(CEDE$With.the.support.received.from.CEDE.Aruba.s.official)
+
+
+```
+```{r}
+table(CEDE$How.do.you.perceive.the.alignment.of.your.project.or.organization.with.CEDE.Aruba.s.goals.and.mission....Mission.CEDE.Aruba..Stimulate..support.and.bring.together.organizations.and.initiatives.aim...)
+```
+
+
