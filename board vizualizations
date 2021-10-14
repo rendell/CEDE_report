@@ -1,0 +1,123 @@
+---
+title: "CEDE board"
+output: html_notebook
+---
+
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(ggrepel)
+library(cowplot)
+library(extrafont)
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
+Colours by Lay:
+AB7942
+66823B 
+FF6630
+F0B333
+```
+
+```{r}
+setwd("~/CEDE")
+CEDE <- read.csv("~/CEDE/CEDE_board.csv", stringsAsFactors = FALSE)
+```
+
+
+Created grouping to decluter graphs
+
+1 - children and youth, individuals & families, neighborhood & communities
+2 - strengthening NGO's, others
+3 - people with limitations, the elderly, vulnerable groups
+```{r}
+CEDE_1<-  CEDE %>%
+  filter(Group == "1")
+
+CEDE_2<-  CEDE %>%
+  filter(Group == "2")
+
+CEDE_3<-  CEDE %>%
+  filter(Group == "3")
+
+
+plot_CEDE_1<-  ggplot(CEDE_1,
+                    aes(x = Effort_resources, 
+                              y = Value_impact,
+                              shape= Theme, 
+                              colour = Theme)) +
+  geom_point() +
+  scale_shape_manual(values = c(2,16,8,5,3,6,7,9))
+
+plot_CEDE_2<-  ggplot(CEDE_2,
+                    aes(x = Effort_resources, 
+                              y = Value_impact,
+                              shape= Theme, 
+                              colour = Theme)) +
+  geom_point() +
+  scale_shape_manual(values = c(2,16,8,5,3,6,7,9))
+
+plot_CEDE_3<-  ggplot(CEDE_3,
+                    aes(x = Effort_resources, 
+                              y = Value_impact,
+                              shape= Theme, 
+                              colour = Theme)) +
+  geom_point() +
+  scale_shape_manual(values = c(2,16,8,5,3,6,7,9))
+```
+
+
+```{r}
+options(ggrepel.max.overlaps = Inf)
+
+plot_CEDE_1 <- plot_CEDE_1+
+  geom_label_repel(aes(label = Priorities), size = 3)+
+  geom_rug()+ 
+  ylim(0,10)+
+  xlim(0,10)+ 
+  labs(x = "Effort/resources", y="Value/Impact")+ 
+  geom_hline(yintercept=5, linetype="dashed", color = "black")+ 
+  geom_vline(xintercept=5, linetype="dashed", color = "black")+ 
+  labs(title = "Priority rating by effort and impact by CEDE Aruba Board",
+       caption = "Scales are grades between 1 and 10")+
+  labs() +
+  theme_bw()+
+  scale_color_manual(values=c("darkblue", "darkred", "grey20"))+
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+
+plot_CEDE_2 <- plot_CEDE_2+
+  geom_label_repel(aes(label = Priorities), size = 3)+
+  geom_rug()+ 
+  ylim(0,10)+
+  xlim(0,10)+ 
+  labs(x = "Effort/resources", y="Value/Impact")+ 
+  geom_hline(yintercept=5, linetype="dashed", color = "black")+ 
+  geom_vline(xintercept=5, linetype="dashed", color = "black")+ 
+  labs(title = "Priority rating by effort and impact by CEDE Aruba Board",
+       caption = "Scales are grades between 1 and 10")+
+  labs() +
+  theme_bw()+
+  scale_color_manual(values=c("darkblue", "darkred", "grey20"))+
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+
+plot_CEDE_3 <- plot_CEDE_3+
+  geom_label_repel(aes(label = Priorities), size = 3)+
+  geom_rug()+ 
+  ylim(0,10)+
+  xlim(0,10)+ 
+  labs(x = "Effort/resources", y="Value/Impact")+ 
+  geom_hline(yintercept=5, linetype="dashed", color = "black")+ 
+  geom_vline(xintercept=5, linetype="dashed", color = "black")+ 
+  labs(title = "Priority rating by effort and impact by CEDE Aruba Board",
+       caption = "Scales are grades between 1 and 10")+
+  labs() +
+  theme_bw()+
+  scale_color_manual(values=c("darkblue", "darkred", "grey20"))+
+  theme(legend.position="bottom") +
+  theme(legend.title=element_blank())
+```
+
+
